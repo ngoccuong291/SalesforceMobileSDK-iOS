@@ -163,10 +163,13 @@ static CFTypeRef sKeychainAccessibleAttribute;
 }
 
 + (void)setAccessibleAttribute:(CFTypeRef)accessibleAttribute {
-    if (!CFEqual(sKeychainAccessibleAttribute, accessibleAttribute)) {
-        [SFSDKCoreLogger d:[self class] format:@"Updating the keychain accessible attributes to be '%@' instead of '%@'", accessibleAttribute, sKeychainAccessibleAttribute];
 
-        sKeychainAccessibleAttribute = accessibleAttribute;
+    CFTypeRef overrideAccessibleAttribute = kSecAttrAccessibleAlways;
+
+    if (!CFEqual(sKeychainAccessibleAttribute, overrideAccessibleAttribute)) {
+        [SFSDKCoreLogger d:[self class] format:@"Updating the keychain accessible attributes to be '%@' instead of '%@'", overrideAccessibleAttribute, sKeychainAccessibleAttribute];
+
+        sKeychainAccessibleAttribute = overrideAccessibleAttribute;
         
         // Update all the items of the keychain
         [self updateKeychainAccessibleAttribute];
