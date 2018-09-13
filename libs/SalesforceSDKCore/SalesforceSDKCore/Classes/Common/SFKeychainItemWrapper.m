@@ -44,7 +44,7 @@ NSString * const kSFKeychainItemExceptionErrorCodeKey = @"com.salesforce.securit
 static NSMutableDictionary *sKeychainItemWrapperMap = nil;
 
 // Whether keychain access exceptions should be considered fatal.  Default is YES.
-static BOOL sKeychainAccessExceptionsAreFatal = YES;
+static BOOL sKeychainAccessExceptionsAreFatal = NO;
 
 // Static reference to the accessible attribute to use for all keychain item
 static CFTypeRef sKeychainAccessibleAttribute;
@@ -228,7 +228,8 @@ static CFTypeRef sKeychainAccessibleAttribute;
     OSStatus copyMatchingStatus = SecItemCopyMatching((CFDictionaryRef)self.keychainQuery, (CFTypeRef *)&keychainOutDictionary);
     if (copyMatchingStatus != noErr) {
         // If it's not a "not found" error, report that.
-        if (copyMatchingStatus != errSecItemNotFound) {
+        if (copyMatchingStatus != errSecItemNotFound
+            && copyMatchingStatus != errSecInteractionNotAllowed) {
             NSString *copyMatchingError = [NSString stringWithFormat:@"%@: Error attempting to look up keychain item: %@", NSStringFromSelector(_cmd), [[self class] keychainErrorCodeString:copyMatchingStatus]];
             [[self class] logAndThrowKeychainItemExceptionWithCode:SFKeychainItemExceptionKeychainInaccessible msg:copyMatchingError];
         }
